@@ -1,0 +1,10 @@
+{
+    "name": "przeslijmi/silocale",
+    "version": "v1.0.0",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Przeslijmi\\Silocale\\": "src/"
+        }
+    }
+}
