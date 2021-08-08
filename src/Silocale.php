@@ -83,7 +83,7 @@ class Silocale
      *
      * @return string
      */
-    public function get(string $mid, array $sprintf = []) : string
+    public function get(string $mid, array $sprintf = []): string
     {
 
         // Get message.
@@ -95,5 +95,30 @@ class Silocale
         }
 
         return $message;
+    }
+
+    /**
+     * Get array of fitting locale basing on given prefix.
+     *
+     * @param string $prefix Prefix (beginnign of message id) used as a pattern.
+     *
+     * @return array
+     */
+    public function getSub(string $prefix)
+    {
+
+        // Lvd.
+        $result = [];
+        $prefix = ( rtrim($prefix, '.') . '.' );
+        $strlen = mb_strlen($prefix);
+
+        // Find matching message id's.
+        foreach ($this->locales as $mid => $message) {
+            if (substr($mid, 0, $strlen) === $prefix) {
+                $result[substr($mid, $strlen)] = $message;
+            }
+        }
+
+        return $result;
     }
 }

@@ -1,11 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Przeslijmi\Silocale;
 
 use PHPUnit\Framework\TestCase;
 use Przeslijmi\Silocale\Exceptions\AcceptLanguageHeaderException;
 use Przeslijmi\Silocale\Silocale;
-
 
 /**
  * Testing Silocale.
@@ -18,10 +19,10 @@ final class SilocaleTest extends TestCase
      *
      * @return void
      */
-    public function testIfWorks() : void
+    public function testIfWorks(): void
     {
 
-        // Create
+        // Create.
         $loc = new Silocale([ 'resources/forTesting/' ], 'en-us');
 
         // Get translation for given message id.
@@ -35,10 +36,10 @@ final class SilocaleTest extends TestCase
      *
      * @return void
      */
-    public function testIfShortLocaleWorks() : void
+    public function testIfShortLocaleWorks(): void
     {
 
-        // Create
+        // Create.
         $loc = new Silocale([ 'resources/forTesting/' ], 'pl');
 
         // Get translation for given message id.
@@ -52,13 +53,13 @@ final class SilocaleTest extends TestCase
      *
      * @return void
      */
-    public function testIfMalformedHeaderThrows() : void
+    public function testIfMalformedHeaderThrows(): void
     {
 
         // Prepare.
         $this->expectException(AcceptLanguageHeaderException::class);
 
-        // Create
+        // Create.
         $loc = new Silocale([ 'resources/forTesting/' ], 'xx-xxx');
     }
 }
