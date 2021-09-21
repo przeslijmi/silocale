@@ -67,10 +67,19 @@ class Silocale
             // Require file.
             if (file_exists($dirUri . $this->lang . '.php') === true) {
 
-                $this->locales = array_merge(
-                    $this->locales,
-                    include $dirUri . $this->lang . '.php'
-                );
+                $prefix          = null;
+                $includedLocales = include $dirUri . $this->lang . '.php';
+                $locales         = [];
+
+                if ($prefix !== null) {
+                    foreach ($includedLocales as $id => $locale) {
+                        $locales[$prefix . '.' . $id] = $locale;
+                    }
+                } else {
+                    $locales = $includedLocales;
+                }
+
+                $this->locales = array_merge($this->locales, $locales);
             }
         }
     }
