@@ -64,13 +64,15 @@ class Silocale
             // Convert slashes.
             $dirUri = rtrim(str_replace('\\', '/', $dirUri), '/') . '/';
 
-            // Require file.
-            if (file_exists($dirUri . $this->lang . '.php') === true) {
+            // Require files.
+            foreach ($this->findFiles($dirUri, $this->lang) as $fileUri) {
 
+                // Lvd.
                 $prefix          = null;
-                $includedLocales = include $dirUri . $this->lang . '.php';
+                $includedLocales = include $fileUri;
                 $locales         = [];
 
+                // Add prefix.
                 if ($prefix !== null) {
                     foreach ($includedLocales as $id => $locale) {
                         $locales[$prefix . '.' . $id] = $locale;
@@ -79,7 +81,12 @@ class Silocale
                     $locales = $includedLocales;
                 }
 
+                // Merge with whole warehouse.
                 $this->locales = array_merge($this->locales, $locales);
+
+                // Free memory.
+                unset($includedLocales);
+                unset($locales);
             }
         }
     }
@@ -97,6 +104,10 @@ class Silocale
 
         // Get message.
         $message = ( $this->locales[$mid] ?? $mid );
+
+        if (is_array($message) === true && isset($message['redirect']) === true) {
+            return $this->get($message['redirect'], $sprintf);
+        }
 
         // Sprintf if needed.
         if (count($sprintf) > 0) {
@@ -125,6 +136,36 @@ class Silocale
         foreach ($this->locales as $mid => $message) {
             if (substr($mid, 0, $strlen) === $prefix) {
                 $result[substr($mid, $strlen)] = $message;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Find locale files inside given dir.
+     *
+     * @param string $dirUri Dir to search in.
+     *
+     * @return array
+     */
+    private function findFiles(string $dirUri, string $lang): array
+    {
+
+        // Lvd.
+        $result = [];
+
+        // Scan directory.
+        $dh = opendir($dirUri);
+        while (( $element = readdir($dh) ) !== false) {
+            if (
+                $element !== '.'
+                && $element !== '..'
+                && is_file($dirUri . $element) === true
+                && mb_substr($element, -4) === '.php'
+                && mb_substr($element, 0, 6) === ( $lang . '.' )
+            ) {
+                $result[] = $dirUri . $element;
             }
         }
 
